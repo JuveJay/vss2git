@@ -626,7 +626,12 @@ namespace Hpdi.Vss2Git
             return null;
         }
 
-        public static string GetWorkingPath(string workingRoot, string vssPath)
+		public static string GetWorkingPath(string workingRoot, string vssPath)
+		{
+			return GetWorkingPath(workingRoot, vssPath, false);
+		}
+
+		public static string GetWorkingPath(string workingRoot, string vssPath, bool suppressVSSPath)
         {
             if (vssPath == "$")
             {
@@ -638,8 +643,15 @@ namespace Hpdi.Vss2Git
                 vssPath = vssPath.Substring(2);
             }
 
-            var relPath = vssPath.Replace(VssDatabase.ProjectSeparatorChar, Path.DirectorySeparatorChar);
-            return Path.Combine(workingRoot, relPath);
+            string relPath = vssPath.Replace(VssDatabase.ProjectSeparatorChar, Path.DirectorySeparatorChar);
+			string rtnPath;
+
+			if (suppressVSSPath)
+				rtnPath = workingRoot; 
+			else
+				rtnPath = Path.Combine(workingRoot, relPath);
+
+			return rtnPath;
         }
     }
 }

@@ -73,7 +73,15 @@ namespace Hpdi.Vss2Git
             set { defaultComment = value; }
         }
 
-        public GitExporter(WorkQueue workQueue, Logger logger,
+		private bool suppressVSSRootPath = false;
+		public bool SuppressVSSRootPath
+		{
+			get { return suppressVSSRootPath; }
+			set { suppressVSSRootPath = value; }
+		}
+
+
+		public GitExporter(WorkQueue workQueue, Logger logger,
             RevisionAnalyzer revisionAnalyzer, ChangesetBuilder changesetBuilder)
             : base(workQueue, logger)
         {
@@ -131,7 +139,7 @@ namespace Hpdi.Vss2Git
                 // create mappings for root projects
                 foreach (var rootProject in revisionAnalyzer.RootProjects)
                 {
-                    var rootPath = VssPathMapper.GetWorkingPath(repoPath, rootProject.Path);
+                    var rootPath = VssPathMapper.GetWorkingPath(repoPath, rootProject.Path, suppressVSSRootPath);
                     pathMapper.SetProjectPath(rootProject.PhysicalName, rootPath, rootProject.Path);
                 }
 
